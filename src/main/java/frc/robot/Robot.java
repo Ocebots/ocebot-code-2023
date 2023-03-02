@@ -76,8 +76,6 @@ public class Robot extends TimedRobot {
    */
   static final double ARM_OUTPUT_POWER = 0.4;
 
-  static final double HUMAN_ARM_OUTPUT_POWER = 0.2; // How fast the arm moves for humans
-
   /**
    * How many amps the intake can use while picking up
    */
@@ -197,7 +195,7 @@ public class Robot extends TimedRobot {
    * Set the arm output power.
    * 
    * @param percent desired speed
-   * @param amps current limit
+   * @param amps    current limit
    */
   public void setIntakeMotor(double percent, int amps) {
     intake.set(percent);
@@ -293,18 +291,18 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     double armPower;
-    if (controller.getArmDown() > 0) {
+    if (controller.getArmDown()) {
       // lower the arm
-      armPower = HUMAN_ARM_OUTPUT_POWER * controller.getArmDown();
-    } else if (controller.getArmUp() > 0) {
+      armPower = ARM_OUTPUT_POWER;
+    } else if (controller.getArmUp()) {
       // raise the arm
-      armPower = HUMAN_ARM_OUTPUT_POWER * controller.getArmDown() * -1;
+      armPower = -ARM_OUTPUT_POWER;
     } else {
       // do nothing and let it sit where it is
       armPower = 0.0;
     }
     setArmMotor(armPower);
-  
+
     double intakePower;
     int intakeAmps;
     if (controller.getIntakeForward()) {
