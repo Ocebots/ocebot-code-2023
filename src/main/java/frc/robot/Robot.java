@@ -293,10 +293,10 @@ public class Robot extends TimedRobot {
     double armPower;
     if (controller.getArmDown()) {
       // lower the arm
-      armPower = -ARM_OUTPUT_POWER;
+      armPower = ARM_OUTPUT_POWER/-2;
     } else if (controller.getArmUp()) {
       // raise the arm
-      armPower = ARM_OUTPUT_POWER;
+      armPower = ARM_OUTPUT_POWER/2;
     } else {
       // do nothing and let it sit where it is
       armPower = 0.0;
