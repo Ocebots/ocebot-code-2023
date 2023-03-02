@@ -8,11 +8,11 @@ public class Controller {
     private static final double DEAD_ZONE_SIZE = 0.05; // axis range from -1 to 1 with 0 being the default
 
     public double getForward() {
-        return -1 * deadZones(DEAD_ZONE_SIZE, controller.getLeftY());
+        return -1 * deadZones(DEAD_ZONE_SIZE, controller.getRightX());
     }
 
     public double getTurn() {
-        return -1 * deadZones(DEAD_ZONE_SIZE, controller.getRightX());
+        return -1 * deadZones(DEAD_ZONE_SIZE, controller.getLeftY());
     }
 
     public boolean getArmUp() {
