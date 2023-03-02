@@ -76,6 +76,8 @@ public class Robot extends TimedRobot {
    */
   static final double ARM_OUTPUT_POWER = 0.4;
 
+  static final double HUMAN_ARM_OUTPUT_POWER = 0.2; // How fast the arm moves for humans
+
   /**
    * How many amps the intake can use while picking up
    */
@@ -291,12 +293,12 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     double armPower;
-    if (controller.getArmDown()) {
+    if (controller.getArmDown() > 0) {
       // lower the arm
-      armPower = ARM_OUTPUT_POWER/-2;
-    } else if (controller.getArmUp()) {
+      armPower = HUMAN_ARM_OUTPUT_POWER * controller.getArmDown();
+    } else if (controller.getArmUp() > 0) {
       // raise the arm
-      armPower = ARM_OUTPUT_POWER/2;
+      armPower = HUMAN_ARM_OUTPUT_POWER * controller.getArmDown() * -1;
     } else {
       // do nothing and let it sit where it is
       armPower = 0.0;
