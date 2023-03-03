@@ -8,16 +8,16 @@ public class Controller {
     private static final double DEAD_ZONE_SIZE = 0.05; // axis range from -1 to 1 with 0 being the default
 
     public double getForward() {
-        return -1 * deadZones(DEAD_ZONE_SIZE, controller.getRightX());
+        return -1 * deadZones(controller.getRightX());
     }
 
     public double getTurn() {
-        return -1 * deadZones(DEAD_ZONE_SIZE, controller.getLeftY());
+        return -1 * deadZones(controller.getLeftY());
     }
 
     public double getSmallTurn() {
-        return -1 * deadZones(DEAD_ZONE_SIZE, controller.getRightTriggerAxis())
-                + deadZones(DEAD_ZONE_SIZE, controller.getLeftTriggerAxis());
+        return -1 * deadZones(controller.getRightTriggerAxis())
+                + deadZones(controller.getLeftTriggerAxis());
     }
 
     public boolean getArmUp() {
@@ -36,8 +36,8 @@ public class Controller {
         return controller.getLeftBumper();
     }
 
-    private double deadZones(double size, double value) {
-        if (Math.abs(value) < size) {
+    private double deadZones(double value) {
+        if (Math.abs(value) < Controller.DEAD_ZONE_SIZE) {
             return 0;
         }
 

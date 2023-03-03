@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import java.util.Objects;
+
 public class Robot extends TimedRobot {
   /*
    * Autonomous selection options.
@@ -190,7 +192,7 @@ public class Robot extends TimedRobot {
   /**
    * Set the arm output power. Positive is out, negative is in.
    * 
-   * @param percent
+   * @param percent The percentage of motor power to run the arm at. Can be negative
    */
   public void setArmMotor(double percent) {
     arm.set(percent);
@@ -235,9 +237,9 @@ public class Robot extends TimedRobot {
     m_autoSelected = m_chooser.getSelected();
     System.out.println("Auto selected: " + m_autoSelected);
 
-    if (m_autoSelected == kConeAuto) {
+    if (Objects.equals(m_autoSelected, kConeAuto)) {
       autonomousIntakePower = INTAKE_OUTPUT_POWER;
-    } else if (m_autoSelected == kCubeAuto) {
+    } else if (Objects.equals(m_autoSelected, kCubeAuto)) {
       autonomousIntakePower = -INTAKE_OUTPUT_POWER;
     }
 
@@ -246,7 +248,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    if (m_autoSelected == kNothingAuto) {
+    if (Objects.equals(m_autoSelected, kNothingAuto)) {
       setArmMotor(0.0);
       setIntakeMotor(0.0, INTAKE_CURRENT_LIMIT_A);
       setDriveMotors(0.0, 0.0);
