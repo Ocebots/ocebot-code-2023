@@ -15,6 +15,11 @@ public class Controller {
         return -1 * deadZones(DEAD_ZONE_SIZE, controller.getLeftY());
     }
 
+    public double getSmallTurn() {
+        return -1 * deadZones(DEAD_ZONE_SIZE, controller.getRightTriggerAxis())
+                + deadZones(DEAD_ZONE_SIZE, controller.getLeftTriggerAxis());
+    }
+
     public boolean getArmUp() {
         return controller.getAButton();
     }
@@ -27,7 +32,7 @@ public class Controller {
         return controller.getRightBumper();
     }
 
-    public boolean getIntakeBackward() { // TODO: figure out trigger buttons
+    public boolean getIntakeBackward() {
         return controller.getLeftBumper();
     }
 

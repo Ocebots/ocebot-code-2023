@@ -63,6 +63,9 @@ public class Robot extends TimedRobot {
    */
   Controller controller = new Controller();
 
+  private double timeMotorStarted = -1;
+  private double timeTurnStarted = -1;
+
   /*
    * Magic numbers. Use these to adjust settings.
    */
@@ -116,6 +119,9 @@ public class Robot extends TimedRobot {
    * Speed to drive backwards in auto
    */
   static final double AUTO_DRIVE_SPEED = -0.25;
+
+  static final double SLOW_START_TIME = 1;
+  static final double SLOW_TURN_TIME = 2;
 
   /**
    * This method is run once when the robot is first started up.
@@ -329,10 +335,26 @@ public class Robot extends TimedRobot {
     }
     setIntakeMotor(intakePower, intakeAmps);
 
-    /*
-     * Negative signs here because the values from the analog sticks are backwards
-     * from what we want. Forward returns a negative when we want it positive.
-     */
-    setDriveMotors(controller.getForward(), controller.getTurn()); // 1 forward, 2 side to side
+    if (timeMotorStarted == -1 && controller.getTurn() != 0) {
+      timeMotorStarted = Timer.getFPGATimestamp();
+    } else if (controller.getTurn() == 0) {
+      timeMotorStarted = -1;
+    }
+
+    if (timeTurnStarted == -1 && controller.getForward() != 0) { // the forward and turn is reversed in the drive
+                                                                 // function
+      timeTurnStarted = Timer.getFPGATimestamp();
+    } else if (controller.getForward() == 0) {
+      timeTurnStarted = -1;
+    }
+
+    double turn = controller.getForward() * Math.min((Timer.getFPGATimestamp() - timeTurnStarted) / SLOW_TURN_TIME, 1);
+
+    if (controller.getSmallTurn() != 0) {
+      turn = controller.getSmallTurn() / 6;
+    }
+
+    setDriveMotors(turn,
+        controller.getTurn() * Math.min((Timer.getFPGATimestamp() - timeMotorStarted) / SLOW_START_TIME, 1));
   }
 }
