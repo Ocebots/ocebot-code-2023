@@ -300,6 +300,17 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    if (controller.getLock()) {
+      driveLeftSpark.setIdleMode(IdleMode.kBrake);
+      driveLeftVictor.setNeutralMode(NeutralMode.Brake);
+      driveRightSpark.setIdleMode(IdleMode.kBrake);
+      driveRightVictor.setNeutralMode(NeutralMode.Brake);
+
+      setDriveMotors(0.0, 0.0);
+
+      return;
+    }
+
     double armPower;
     if (controller.getArmDown()) {
       // lower the arm

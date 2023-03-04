@@ -36,6 +36,10 @@ public class Controller {
         return controller.getLeftBumper();
     }
 
+    public boolean getLock() {
+        return controller.getBButton();
+    }
+
     private double deadZones(double value) {
         if (Math.abs(value) < Controller.DEAD_ZONE_SIZE) {
             return 0;
