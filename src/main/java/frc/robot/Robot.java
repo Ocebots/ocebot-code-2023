@@ -305,10 +305,6 @@ public class Robot extends TimedRobot {
       driveLeftVictor.setNeutralMode(NeutralMode.Brake);
       driveRightSpark.setIdleMode(IdleMode.kBrake);
       driveRightVictor.setNeutralMode(NeutralMode.Brake);
-
-      setDriveMotors(0.0, 0.0);
-
-      return;
     } else {
       driveLeftSpark.setIdleMode(IdleMode.kCoast);
       driveLeftVictor.setNeutralMode(NeutralMode.Coast);
@@ -366,13 +362,19 @@ public class Robot extends TimedRobot {
       timeTurnStarted = -1;
     }
 
-    double turn = controller.getForward() * Math.min((Timer.getFPGATimestamp() - timeTurnStarted) / SLOW_TURN_TIME, 1);
+    double turn = controller.getForward() * Math.min((Timer.getFPGATimestamp() - timeTurnStarted) / SLOW_TURN_TIME + 0.25, 1);
 
     if (controller.getSmallTurn() != 0) {
-      turn = controller.getSmallTurn() / 6;
+      turn = controller.getSmallTurn() / 4;
     }
 
-    setDriveMotors(turn,
-        controller.getTurn() * Math.min((Timer.getFPGATimestamp() - timeMotorStarted) / SLOW_START_TIME, 1));
+    double speedModifier = 1;
+
+    if (controller.getLock()) {
+      speedModifier = 0.3;
+    }
+
+    setDriveMotors(turn * speedModifier,
+        controller.getTurn() * Math.min((Timer.getFPGATimestamp() - timeMotorStarted) / SLOW_START_TIME, 1) * speedModifier);
   }
 }
