@@ -309,6 +309,11 @@ public class Robot extends TimedRobot {
       setDriveMotors(0.0, 0.0);
 
       return;
+    } else {
+      driveLeftSpark.setIdleMode(IdleMode.kCoast);
+      driveLeftVictor.setNeutralMode(NeutralMode.Coast);
+      driveRightSpark.setIdleMode(IdleMode.kCoast);
+      driveRightVictor.setNeutralMode(NeutralMode.Coast);
     }
 
     double armPower;
