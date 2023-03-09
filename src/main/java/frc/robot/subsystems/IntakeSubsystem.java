@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.abstracts.TimedCommandBuilder;
@@ -34,14 +35,14 @@ public class IntakeSubsystem extends SubsystemBase {
     /**
      * @param forward makes the speed positive
      */
-    private CommandBase runIntakeCommand(boolean forward) {
+    private Command runIntakeCommand(boolean forward) {
         return TimedCommandBuilder.of(() -> runIntake(SPEED * (forward ? 1 : -1), AMP_LIMIT), () -> runIntake(0, AMP_LIMIT), 1, this);
     }
 
     /**
      * Cube in and cone out
      */
-    public CommandBase intakeForwardCommand() {
+    public Command intakeForwardCommand() {
         lastUsed = LastUsed.Forward;
         return runIntakeCommand(true);
     }
@@ -49,7 +50,7 @@ public class IntakeSubsystem extends SubsystemBase {
     /**
      * Cube out and cone in
      */
-    public CommandBase intakeBackwardCommand() {
+    public Command intakeBackwardCommand() {
         lastUsed = LastUsed.Back;
         return runIntakeCommand(false);
     }
