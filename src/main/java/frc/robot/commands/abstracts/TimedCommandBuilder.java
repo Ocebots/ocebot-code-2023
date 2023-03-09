@@ -3,6 +3,7 @@ package frc.robot.commands.abstracts;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.ArmSubsystem;
 
@@ -29,8 +30,6 @@ public class TimedCommandBuilder {
     }
 
     public static Command fromCommand(Command command, double duration) {
-        double startTime = Timer.getFPGATimestamp();
-
-        return command.until(() -> Timer.getFPGATimestamp() - startTime >= duration);
+        return Commands.waitSeconds(duration).raceWith(command);
     }
 }
