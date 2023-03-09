@@ -42,6 +42,11 @@ public class RobotContainer {
    * Use this method to define your trigger->command mappings.
    */
   private void configureBindings() {
+    controller.y().onTrue(armSubsystem.raiseArm());
+    controller.a().onTrue(armSubsystem.lowerArm());
+
+    controller.leftBumper().onTrue(intakeSubsystem.intakeBackwardCommandTele());
+    controller.rightBumper().onTrue(intakeSubsystem.intakeForwardCommandTele());
   }
 
   /**
@@ -52,11 +57,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return null;
-  }
-
-  public void teleopInit() {
-    new ControllerUtil.SlowStart(() -> ControllerUtil.deadZone(controller.getLeftX()), 1);
-    new ControllerUtil.SlowStart(() -> ControllerUtil.deadZone(controller.getRightY()), 1, 0.25, 1);
   }
 
   public void teleopPeriodic() {

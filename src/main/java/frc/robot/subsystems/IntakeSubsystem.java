@@ -4,8 +4,11 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.abstracts.TimedCommandBuilder;
+
+import java.util.Set;
 
 public class IntakeSubsystem extends SubsystemBase {
     private static final int AMP_LIMIT = 25;
@@ -69,6 +72,37 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public Command coneInCommand() {
         return this.intakeBackwardCommand();
+    }
+
+    private Command runIntakeCommandTele(boolean forward) {
+        IntakeSubsystem intakeSubsystem = this;
+
+        return new Command() {
+            @Override
+            public Set<Subsystem> getRequirements() {
+                return Set.of(intakeSubsystem);
+            }
+
+            @Override
+            public void initialize() {
+                runIntake(SPEED * (forward ? 1 : -1), AMP_LIMIT);
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                runIntake(0, 0);
+            }
+        };
+    }
+
+    public Command intakeForwardCommandTele() {
+        lastUsed = LastUsed.Forward;
+        return runIntakeCommandTele(true);
+    }
+
+    public Command intakeBackwardCommandTele() {
+        lastUsed = LastUsed.Back;
+        return runIntakeCommandTele(false);
     }
 
     @Override
