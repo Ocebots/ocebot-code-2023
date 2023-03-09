@@ -1,10 +1,12 @@
 package frc.robot.hardware;
 
+import edu.wpi.first.networktables.NTSendable;
+import edu.wpi.first.networktables.NTSendableBuilder;
 import edu.wpi.first.wpilibj.I2C;
 
 import java.nio.ByteBuffer;
 
-public class Gyroscope { // TODO: Error handling
+public class Gyroscope implements NTSendable { // TODO: Error handling
   private static final int ADDRESS = 0x1; // TODO: I don't remember the address
 
   private static final int VERIFY_REGISTER_ADDRESS = 0x0F;
@@ -38,5 +40,11 @@ public class Gyroscope { // TODO: Error handling
     communicationPort.read(address, 1, value);
 
     return value[0];
+  }
+
+  @Override
+  public void initSendable(NTSendableBuilder builder) {
+    builder.setSmartDashboardType("Gyro");
+    builder.addDoubleProperty("Pitch", this::getPitch, null);
   }
 }
