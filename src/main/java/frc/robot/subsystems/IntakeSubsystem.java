@@ -47,12 +47,28 @@ public class IntakeSubsystem extends SubsystemBase {
         return runIntakeCommand(true);
     }
 
+    public Command cubeInCommand() {
+        return this.intakeForwardCommand();
+    }
+
+    public Command coneOutCommand() {
+        return this.intakeForwardCommand();
+    }
+
     /**
      * Cube out and cone in
      */
     public Command intakeBackwardCommand() {
         lastUsed = LastUsed.Back;
         return runIntakeCommand(false);
+    }
+
+    public Command cubeOutCommand() {
+        return this.intakeBackwardCommand();
+    }
+
+    public Command coneInCommand() {
+        return this.intakeBackwardCommand();
     }
 
     @Override
