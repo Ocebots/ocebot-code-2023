@@ -8,6 +8,9 @@ import frc.robot.Constants.OperatorConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -22,6 +25,13 @@ public class RobotContainer {
   private final CommandXboxController controller =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
+  private final ControllerUtil.SlowStart forwardSlow = new ControllerUtil.SlowStart(() -> ControllerUtil.deadZone(controller.getLeftY()), 1);
+  private final ControllerUtil.SlowStart turnSlow = new ControllerUtil.SlowStart(() -> ControllerUtil.deadZone(controller.getRightX()), 1, 0.25, 1);
+
+  private final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
+  private final ArmSubsystem armSubsystem = new ArmSubsystem();
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -29,13 +39,7 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
+   * Use this method to define your trigger->command mappings.
    */
   private void configureBindings() {
   }
@@ -48,5 +52,14 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return null;
+  }
+
+  public void teleopInit() {
+    new ControllerUtil.SlowStart(() -> ControllerUtil.deadZone(controller.getLeftX()), 1);
+    new ControllerUtil.SlowStart(() -> ControllerUtil.deadZone(controller.getRightY()), 1, 0.25, 1);
+  }
+
+  public void teleopPeriodic() {
+    this.drivetrainSubsystem.arcadeDrive(forwardSlow.get() * (controller.getHID().getBButton() ? 0.3 : 1), turnSlow.get());
   }
 }
