@@ -31,8 +31,11 @@ public class ControllerUtil {
         }
 
         public double get() {
-            if (supplier.get() > 0 && startTime == -1) {
+            if (Math.abs(supplier.get()) > 0 && startTime == -1) {
                 startTime = Timer.getFPGATimestamp();
+            } else if (Math.abs(supplier.get()) == 0) {
+                startTime = -1;
+                return 0;
             }
 
             return slowStart.apply(Timer.getFPGATimestamp() - startTime) * supplier.get();
