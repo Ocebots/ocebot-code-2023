@@ -23,7 +23,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void arcadeDrive(double speed, double turn) {
-        differentialDrive.arcadeDrive(speed, turn);
+        differentialDrive.arcadeDrive(turn, speed, false);
     }
 
     public DriveCommand driveCommand(double speed, double turn) {
