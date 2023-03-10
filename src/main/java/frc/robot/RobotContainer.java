@@ -42,11 +42,11 @@ public class RobotContainer {
    * Use this method to define your trigger->command mappings.
    */
   private void configureBindings() {
-    controller.y().onTrue(armSubsystem.raiseArm());
-    controller.a().onTrue(armSubsystem.lowerArm());
+    controller.y().whileTrue(armSubsystem.raiseArm());
+    controller.a().whileTrue(armSubsystem.lowerArm());
 
-    controller.leftBumper().onTrue(intakeSubsystem.intakeBackwardCommandTele());
-    controller.rightBumper().onTrue(intakeSubsystem.intakeForwardCommandTele());
+    controller.leftBumper().whileTrue(intakeSubsystem.intakeBackwardCommandTele());
+    controller.rightBumper().whileTrue(intakeSubsystem.intakeForwardCommandTele());
   }
 
   /**
