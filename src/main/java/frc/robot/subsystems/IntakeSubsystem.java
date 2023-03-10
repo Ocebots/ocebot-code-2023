@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.abstracts.TimedCommandBuilder;
@@ -105,12 +104,12 @@ public class IntakeSubsystem extends SubsystemBase {
         return runIntakeCommandTele(false);
     }
 
-    @Override
-    public void periodic() {
-        if (lastUsed == LastUsed.None) {
-            return;
-        }
-
-        runIntake(HOLD_SPEED * (lastUsed == LastUsed.Forward ? 1 : -1), HOLD_AMP_LIMIT);
-    }
+//    @Override TODO: Fix this
+//    public void periodic() {
+//        if (lastUsed == LastUsed.None) {
+//            return;
+//        }
+//
+//        runIntake(HOLD_SPEED * (lastUsed == LastUsed.Forward ? 1 : -1), HOLD_AMP_LIMIT);
+//    }
 }
