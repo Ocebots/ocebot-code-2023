@@ -6,6 +6,9 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import frc.robot.hardware.VictorMotorController;
 import frc.robot.commands.abstracts.DriveCommand;
@@ -24,6 +27,22 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public void arcadeDrive(double speed, double turn) {
         differentialDrive.arcadeDrive(speed, turn);
+    }
+
+    //idle mode for drive motors function
+    public void driveMotorIdle(boolean shouldBrake) {
+        if (shouldBrake) {
+            driveLeftSpark.setIdleMode(CANSparkMax.IdleMode.kBrake);
+            driveLeftVictor.setNeutralMode(NeutralMode.Brake);
+            driveRightSpark.setIdleMode(CANSparkMax.IdleMode.kBrake);
+            driveRightVictor.setNeutralMode(NeutralMode.Brake);
+        }
+        else {
+            driveLeftSpark.setIdleMode(CANSparkMax.IdleMode.kCoast);
+            driveLeftVictor.setNeutralMode(NeutralMode.Coast);
+            driveRightSpark.setIdleMode(CANSparkMax.IdleMode.kCoast);
+            driveRightVictor.setNeutralMode(NeutralMode.Coast);
+        }
     }
 
     public DriveCommand driveCommand(double speed, double turn) {
