@@ -7,7 +7,6 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -60,6 +59,14 @@ public class RobotContainer {
   }
 
   public void teleopPeriodic() {
-    this.drivetrainSubsystem.arcadeDrive(forwardSlow.get() * (controller.getHID().getBButton() ? 0.3 : 1), turnSlow.get());
+    double turn = turnSlow.get();
+
+    double triggerTurn = controller.getLeftTriggerAxis() - controller.getRightTriggerAxis();
+
+    if (ControllerUtil.deadZone(triggerTurn) != 0) {
+      turn = triggerTurn / 4;
+    }
+
+    this.drivetrainSubsystem.arcadeDrive(forwardSlow.get() * (controller.getHID().getBButton() ? 0.3 : 1), turn);
   }
 }
