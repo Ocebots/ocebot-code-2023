@@ -18,6 +18,7 @@ public class ArmSubsystem extends SubsystemBase implements AutoCloseable {
 
     public ArmSubsystem() {
         arm.setSmartCurrentLimit(AMP_LIMIT);
+        arm.setIdleMode(CANSparkMax.IdleMode.kBrake);
     }
 
     public void setArmSpeed(double percent) {
