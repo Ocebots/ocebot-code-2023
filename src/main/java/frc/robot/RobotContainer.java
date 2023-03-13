@@ -4,12 +4,15 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.OperatorConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+
+import java.util.Set;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -35,6 +38,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    drivetrainSubsystem.driveMotorIdle(true);
   }
 
   /**
@@ -46,6 +50,22 @@ public class RobotContainer {
 
     controller.leftBumper().whileTrue(intakeSubsystem.intakeBackwardCommandTele());
     controller.rightBumper().whileTrue(intakeSubsystem.intakeForwardCommandTele());
+    controller.b().whileTrue(new Command() {
+      @Override
+      public Set<Subsystem> getRequirements() {
+        return Set.of(); // Doesn't need a requirement because it doesn't modify drive values
+      }
+
+      @Override
+      public void initialize() {
+        drivetrainSubsystem.driveMotorIdle(true);
+      }
+
+      @Override
+      public void end(boolean interrupted) {
+        drivetrainSubsystem.driveMotorIdle(false);
+      }
+    });
   }
 
   /**
@@ -68,5 +88,9 @@ public class RobotContainer {
     }
 
     this.drivetrainSubsystem.arcadeDrive(forwardSlow.get() * (controller.getHID().getBButton() ? 0.3 : 1), turn);
+  }
+
+  public void teleopInit() {
+    drivetrainSubsystem.driveMotorIdle(false);
   }
 }
