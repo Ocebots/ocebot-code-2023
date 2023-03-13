@@ -6,10 +6,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.abstracts.TimedCommandBuilder;
-
 import java.util.Set;
 
-public class IntakeSubsystem extends SubsystemBase {
+public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
     private static final int AMP_LIMIT = 25;
     private static final double SPEED = 1;
 
@@ -19,6 +18,12 @@ public class IntakeSubsystem extends SubsystemBase {
     private final CANSparkMax intake = new CANSparkMax(6, CANSparkMaxLowLevel.MotorType.kBrushless);
 
     private LastUsed lastUsed = LastUsed.None;
+
+    @Override
+    public void close() throws Exception {
+        intake.set(0);
+        intake.close();
+    }
 
     public enum LastUsed {
         Forward,
