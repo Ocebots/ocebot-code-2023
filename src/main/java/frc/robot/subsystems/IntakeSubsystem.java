@@ -32,6 +32,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
     }
 
     public  IntakeSubsystem() {
+        intake.setIdleMode(CANSparkMax.IdleMode.kBrake);
     }
 
     private void runIntake(double speed, int amps) {
