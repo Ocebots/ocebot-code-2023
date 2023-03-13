@@ -26,7 +26,7 @@ public class DrivetrainSubsystem extends SubsystemBase implements AutoCloseable 
     }
 
     public void arcadeDrive(double speed, double turn) {
-        differentialDrive.arcadeDrive(speed, turn);
+        differentialDrive.arcadeDrive(turn, speed, false);
     }
 
     //idle mode for drive motors function
