@@ -10,7 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import frc.robot.hardware.VictorMotorController;
 import frc.robot.commands.abstracts.DriveCommand;
 
-public class DrivetrainSubsystem extends SubsystemBase {
+public class DrivetrainSubsystem extends SubsystemBase implements AutoCloseable {
     private final CANSparkMax driveLeftSpark = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushed);
     private final CANSparkMax driveRightSpark = new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushed);
     private final VictorSPX driveLeftVictor = new VictorSPX(3);
@@ -54,5 +54,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public DriveCommand turnRight(double turn) {
         return turnLeft(-turn);
+    }
+
+    @Override
+    public void close() throws Exception {
+        this.differentialDrive.stopMotor();
+        this.differentialDrive.close();
+        this.driveLeftSpark.close();
+        this.driveRightSpark.close();
     }
 }

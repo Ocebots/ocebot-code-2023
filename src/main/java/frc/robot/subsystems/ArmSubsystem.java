@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.abstracts.TimedCommandBuilder;
 
-public class ArmSubsystem extends SubsystemBase {
+public class ArmSubsystem extends SubsystemBase implements AutoCloseable {
     private final CANSparkMax arm = new CANSparkMax(5, CANSparkMaxLowLevel.MotorType.kBrushless);
 
     private static final int AMP_LIMIT = 20;
@@ -31,5 +31,11 @@ public class ArmSubsystem extends SubsystemBase {
 
     public Command lowerArm() {
         return armCommand(false);
+    }
+
+    @Override
+    public void close() throws Exception {
+        arm.set(0);
+        arm.close();
     }
 }
