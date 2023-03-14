@@ -5,7 +5,7 @@ import frc.robot.commands.abstracts.TimedCommandBuilder;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class CubeAutoCommand {
+public class AutoCubeCommand {
     public static SequentialCommandGroup getCommand(ArmSubsystem armSubsystem, IntakeSubsystem intakeSubsystem) {
         return new SequentialCommandGroup(armSubsystem.raiseArm(), TimedCommandBuilder.of(intakeSubsystem.cubeOutCommand(), 1), armSubsystem.lowerArm());
     }
