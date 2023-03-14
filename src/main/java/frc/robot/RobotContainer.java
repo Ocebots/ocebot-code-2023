@@ -47,6 +47,7 @@ public class RobotContainer {
     configureBindings();
     drivetrainSubsystem.driveMotorIdle(true);
     chooser.setDefaultOption("Cube + Mobility", new SequentialCommandGroup(AutoCubeCommand.getCommand(armSubsystem, intakeSubsystem), AutoMobilityCommand.getCommand(drivetrainSubsystem)));
+    chooser.addOption("None", null);
     SmartDashboard.putData(chooser);
   }
 
