@@ -5,13 +5,15 @@ import com.revrobotics.CANSparkMaxLowLevel;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import frc.robot.hardware.VictorMotorController;
-import frc.robot.commands.abstracts.DriveCommand;
+
+import java.util.Set;
 
 public class DrivetrainSubsystem extends SubsystemBase implements AutoCloseable {
     private final CANSparkMax driveLeftSpark = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushed);
@@ -22,7 +24,6 @@ public class DrivetrainSubsystem extends SubsystemBase implements AutoCloseable 
     private final DifferentialDrive differentialDrive = new DifferentialDrive(new MotorControllerGroup(driveLeftSpark, new VictorMotorController(driveLeftVictor)), new MotorControllerGroup(driveRightSpark, new VictorMotorController(driveRightVictor)));
 
     public DrivetrainSubsystem() {
-
     }
 
     public void arcadeDrive(double speed, double turn) {
@@ -45,33 +46,61 @@ public class DrivetrainSubsystem extends SubsystemBase implements AutoCloseable 
         }
     }
 
-    public DriveCommand driveCommand(double speed, double turn) {
-        return new DriveCommand(this){
+    public Command driveMotorIdleCommand(boolean shouldBrake) {
+        DrivetrainSubsystem drivetrainSubsystem = this;
+        return new Command() {
             @Override
-            public void initialize() {
-                this.drivetrainSubsystem.arcadeDrive(speed, turn);
+            public Set<Subsystem> getRequirements() {
+                return Set.of(drivetrainSubsystem);
             }
 
             @Override
-            public void end(boolean interrupted) {
-                this.drivetrainSubsystem.arcadeDrive(0, 0);
+            public boolean isFinished() {
+                drivetrainSubsystem.driveMotorIdle(shouldBrake);
+                return true;
             }
         };
     }
 
-    public DriveCommand driveForward(double speed) {
+    public Command driveCommand(double speed, double turn) {
+        DrivetrainSubsystem drivetrainSubsystem = this;
+
+        return new Command(){
+            @Override
+            public void initialize() {
+                drivetrainSubsystem.arcadeDrive(speed, turn);
+            }
+
+            @Override
+            public void execute() {
+                drivetrainSubsystem.arcadeDrive(speed, turn);
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                drivetrainSubsystem.arcadeDrive(0, 0);
+            }
+
+            @Override
+            public Set<Subsystem> getRequirements() {
+                return Set.of(drivetrainSubsystem);
+            }
+        };
+    }
+
+    public Command driveForward(double speed) {
         return driveCommand(speed, 0);
     }
 
-    public DriveCommand driveBackward(double speed) {
+    public Command driveBackward(double speed) {
         return driveForward(-speed);
     }
 
-    public DriveCommand turnLeft(double turn) {
+    public Command turnLeft(double turn) {
         return driveCommand(0, turn);
     }
 
-    public DriveCommand turnRight(double turn) {
+    public Command turnRight(double turn) {
         return turnLeft(-turn);
     }
 
