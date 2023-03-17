@@ -94,6 +94,11 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
             }
 
             @Override
+            public void execute() {
+                runIntake(SPEED * (forward ? 1 : -1), AMP_LIMIT);
+            }
+
+            @Override
             public void end(boolean interrupted) {
                 runIntake(0, 0);
             }

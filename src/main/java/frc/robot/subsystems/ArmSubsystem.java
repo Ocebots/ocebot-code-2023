@@ -44,6 +44,11 @@ public class ArmSubsystem extends SubsystemBase implements AutoCloseable {
             }
 
             @Override
+            public void execute() {
+                setArmSpeed(SPEED * (forward ? -1 : 1));
+            }
+
+            @Override
             public void end(boolean interrupted) {
                 setArmSpeed(0);
             }
