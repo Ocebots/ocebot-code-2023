@@ -13,8 +13,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AutoCubeCommand;
 import frc.robot.commands.AutoMobilityCommand;
+import frc.robot.commands.abstracts.TimedCommandBuilder;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.GyroSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
 import java.util.Set;
@@ -32,12 +34,13 @@ public class RobotContainer {
   private final CommandXboxController controller =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
-  private final ControllerUtil.SlowStart forwardSlow = new ControllerUtil.SlowStart(() -> ControllerUtil.deadZone(controller.getLeftY()), 1);
-  private final ControllerUtil.SlowStart turnSlow = new ControllerUtil.SlowStart(() -> ControllerUtil.deadZone(controller.getRightX()), 1, 0.25, 1);
+  private final ControllerUtil.SlowStart forwardSlow = new ControllerUtil.SlowStart(() -> ControllerUtil.deadZone(controller.getLeftY() * -1), 1);
+  private final ControllerUtil.SlowStart turnSlow = new ControllerUtil.SlowStart(() -> ControllerUtil.deadZone(controller.getRightX() * -1), 1, 0.4, 1);
 
   private final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
   private final ArmSubsystem armSubsystem = new ArmSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  private final GyroSubsystem gyroSubsystem = new GyroSubsystem();
 
   private final SendableChooser<Command> chooser = new SendableChooser<>();
 
@@ -45,9 +48,13 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    drivetrainSubsystem.driveMotorIdle(true);
+
+    drivetrainSubsystem.driveMotorIdle(false);
+
     chooser.setDefaultOption("Cube + Mobility", new SequentialCommandGroup(AutoCubeCommand.getCommand(armSubsystem, intakeSubsystem), AutoMobilityCommand.getCommand(drivetrainSubsystem)));
     chooser.addOption("None", null);
+    chooser.addOption("Mobility Only", AutoMobilityCommand.getCommand(drivetrainSubsystem));
+    chooser.addOption("Turn", TimedCommandBuilder.of(drivetrainSubsystem.turnLeft(0.4), 2));
     SmartDashboard.putData(chooser);
   }
 
@@ -101,6 +108,14 @@ public class RobotContainer {
   }
 
   public void teleopInit() {
-    drivetrainSubsystem.driveMotorIdle(false);
+    this.drivetrainSubsystem.driveMotorIdle(false);
+  }
+
+  public Command getTestCommand() {
+    return this.gyroSubsystem.setLevelCommand();
+  }
+
+  public void testPeriodic() {
+    SmartDashboard.putBoolean("Gyro Level", gyroSubsystem.isLevel());
   }
 }
