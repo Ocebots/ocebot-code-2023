@@ -3,10 +3,8 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.abstracts.DriveCommand;
 import frc.robot.commands.abstracts.TimedCommandBuilder;
 import java.util.Set;
 
