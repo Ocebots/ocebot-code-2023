@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -47,45 +48,11 @@ public class DrivetrainSubsystem extends SubsystemBase implements AutoCloseable 
     }
 
     public Command driveMotorIdleCommand(boolean shouldBrake) {
-        DrivetrainSubsystem drivetrainSubsystem = this;
-        return new Command() {
-            @Override
-            public Set<Subsystem> getRequirements() {
-                return Set.of(drivetrainSubsystem);
-            }
-
-            @Override
-            public boolean isFinished() {
-                drivetrainSubsystem.driveMotorIdle(shouldBrake);
-                return true;
-            }
-        };
+        return Commands.runOnce(() -> this.driveMotorIdle(shouldBrake), this);
     }
 
     public Command driveCommand(double speed, double turn) {
-        DrivetrainSubsystem drivetrainSubsystem = this;
-
-        return new Command(){
-            @Override
-            public void initialize() {
-                drivetrainSubsystem.arcadeDrive(speed, turn);
-            }
-
-            @Override
-            public void execute() {
-                drivetrainSubsystem.arcadeDrive(speed, turn);
-            }
-
-            @Override
-            public void end(boolean interrupted) {
-                drivetrainSubsystem.arcadeDrive(0, 0);
-            }
-
-            @Override
-            public Set<Subsystem> getRequirements() {
-                return Set.of(drivetrainSubsystem);
-            }
-        };
+        return Commands.runEnd(() -> this.arcadeDrive(speed, turn), () -> this.arcadeDrive(0,0), this);
     }
 
     public Command driveForward(double speed) {

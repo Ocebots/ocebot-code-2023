@@ -4,6 +4,7 @@ import edu.wpi.first.networktables.NTSendable;
 import edu.wpi.first.networktables.NTSendableBuilder;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -18,21 +19,11 @@ public class GyroSubsystem extends SubsystemBase implements AutoCloseable, NTSen
     }
 
     public Command setLevelCommand() {
-        GyroSubsystem gyroSubsystem = this;
+        return Commands.runOnce(() -> levelValue = this.getAngle(), this);
+    }
 
-        return new Command(){
-
-            @Override
-            public Set<Subsystem> getRequirements() {
-                return Set.of(gyroSubsystem);
-            }
-
-            @Override
-            public boolean isFinished() {
-                levelValue = gyroSubsystem.getAngle();
-                return true;
-            }
-        };
+    public Command setAngleAxis(ADIS16470_IMU.IMUAxis newAxis) {
+        return Commands.runOnce(() -> this.setAngleAxis(newAxis), this);
     }
 
     public boolean isLevel() {

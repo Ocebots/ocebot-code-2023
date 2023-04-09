@@ -48,7 +48,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    this.m_robotContainer.teleopExit();
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -106,4 +108,9 @@ public class Robot extends TimedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {}
+
+  @Override
+  public void teleopExit() {
+    this.m_robotContainer.teleopExit();
+  }
 }

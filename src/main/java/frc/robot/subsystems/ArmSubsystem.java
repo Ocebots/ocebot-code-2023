@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.abstracts.TimedCommandBuilder;
@@ -24,7 +25,7 @@ public class ArmSubsystem extends SubsystemBase implements AutoCloseable {
     }
 
     private Command armCommandAuto(boolean forward) {
-        return TimedCommandBuilder.of(() -> setArmSpeed(SPEED * (forward ? -1 : 1)), () -> setArmSpeed(0), 3, this);
+        return TimedCommandBuilder.of(() -> setArmSpeed(SPEED * (forward ? -1 : 1)), () -> setArmSpeed(0), 2, this);
     }
 
     public Command raiseArm() {
@@ -36,23 +37,7 @@ public class ArmSubsystem extends SubsystemBase implements AutoCloseable {
     }
 
     private Command armCommand(boolean forward) {
-        ArmSubsystem armSubsystem = this;
-        return new Command(){
-            @Override
-            public void initialize() {
-                setArmSpeed(SPEED * (forward ? -1 : 1));
-            }
-
-            @Override
-            public void end(boolean interrupted) {
-                setArmSpeed(0);
-            }
-
-            @Override
-            public Set<Subsystem> getRequirements() {
-                return Set.of(armSubsystem);
-            }
-        };
+        return Commands.runEnd(() -> this.setArmSpeed(SPEED * (forward ? -1 : 1)), () -> this.setArmSpeed(0), this);
     }
 
     public Command raiseArmTele() {

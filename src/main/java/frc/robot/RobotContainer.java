@@ -6,14 +6,16 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.OperatorConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.AutoBalanceCommand;
 import frc.robot.commands.AutoCubeCommand;
 import frc.robot.commands.AutoMobilityCommand;
-import frc.robot.commands.abstracts.TimedCommandBuilder;
+import frc.robot.commands.AutoTurnCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.GyroSubsystem;
@@ -54,7 +56,9 @@ public class RobotContainer {
     chooser.setDefaultOption("Cube + Mobility", new SequentialCommandGroup(AutoCubeCommand.getCommand(armSubsystem, intakeSubsystem), AutoMobilityCommand.getCommand(drivetrainSubsystem)));
     chooser.addOption("None", null);
     chooser.addOption("Mobility Only", AutoMobilityCommand.getCommand(drivetrainSubsystem));
-    chooser.addOption("Turn", TimedCommandBuilder.of(drivetrainSubsystem.turnLeft(0.4), 2));
+    chooser.addOption("Cube Only", AutoCubeCommand.getCommand(armSubsystem, intakeSubsystem));
+    chooser.addOption("Balance", AutoBalanceCommand.getCommand(drivetrainSubsystem, gyroSubsystem));
+    chooser.addOption("Turn", AutoTurnCommand.getCommand(drivetrainSubsystem, gyroSubsystem));
     SmartDashboard.putData(chooser);
   }
 
@@ -67,22 +71,8 @@ public class RobotContainer {
 
     controller.leftBumper().whileTrue(intakeSubsystem.intakeBackwardCommandTele());
     controller.rightBumper().whileTrue(intakeSubsystem.intakeForwardCommandTele());
-    controller.b().whileTrue(new Command() {
-      @Override
-      public Set<Subsystem> getRequirements() {
-        return Set.of(); // Doesn't need a requirement because it doesn't modify drive values
-      }
 
-      @Override
-      public void initialize() {
-        drivetrainSubsystem.driveMotorIdle(true);
-      }
-
-      @Override
-      public void end(boolean interrupted) {
-        drivetrainSubsystem.driveMotorIdle(false);
-      }
-    });
+    controller.b().whileTrue(Commands.runEnd(() -> drivetrainSubsystem.driveMotorIdleCommand(true), () -> drivetrainSubsystem.driveMotorIdle(false), drivetrainSubsystem));
   }
 
   /**
@@ -117,5 +107,9 @@ public class RobotContainer {
 
   public void testPeriodic() {
     SmartDashboard.putBoolean("Gyro Level", gyroSubsystem.isLevel());
+  }
+
+  public void teleopExit() {
+    this.drivetrainSubsystem.driveMotorIdle(true);
   }
 }

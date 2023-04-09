@@ -7,6 +7,10 @@ import frc.robot.subsystems.IntakeSubsystem;
 
 public class AutoCubeCommand {
     public static SequentialCommandGroup getCommand(ArmSubsystem armSubsystem, IntakeSubsystem intakeSubsystem) {
-        return new SequentialCommandGroup(armSubsystem.raiseArm(), TimedCommandBuilder.of(intakeSubsystem.cubeOutCommand(), 1), armSubsystem.lowerArm());
+        return new SequentialCommandGroup(
+                armSubsystem.raiseArm(),
+                TimedCommandBuilder.of(intakeSubsystem.cubeOutCommand(), 1),
+                armSubsystem.lowerArm()
+        );
     }
 }

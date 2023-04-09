@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.abstracts.TimedCommandBuilder;
@@ -11,6 +12,7 @@ import java.util.Set;
 public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
     private static final int AMP_LIMIT = 25;
     private static final double SPEED = 1;
+    private static final double CUBE_IN_SPEED = 0.66;
 
     private static final int HOLD_AMP_LIMIT = 5;
     private static final double HOLD_SPEED = 0.07;
@@ -80,27 +82,10 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
     }
 
     private Command runIntakeCommandTele(boolean forward) {
-        IntakeSubsystem intakeSubsystem = this;
-
-        return new Command() {
-            @Override
-            public Set<Subsystem> getRequirements() {
-                return Set.of(intakeSubsystem);
-            }
-
-            @Override
-            public void initialize() {
-                runIntake(SPEED * (forward ? 1 : -1), AMP_LIMIT);
-            }
-
-            @Override
-            public void end(boolean interrupted) {
-                runIntake(0, 0);
-            }
-        };
+        return Commands.runEnd(() -> runIntake((forward ? CUBE_IN_SPEED : SPEED) * (forward ? 1 : -1), AMP_LIMIT), () -> runIntake(0, 0), this);
     }
 
-    public Command intakeForwardCommandTele() {
+    public Command intakeForwardCommandTele() { // should be slower
         lastUsed = LastUsed.Forward;
         return runIntakeCommandTele(true);
     }
